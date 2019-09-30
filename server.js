@@ -1,6 +1,6 @@
 let express = require('express');
 let app = express();
-let host = 3000
+let host = 4000
 let server = app.listen(host)
 //Storing the latest image in img_cache
 const img_cache = [];
