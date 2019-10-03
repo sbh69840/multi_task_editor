@@ -1,5 +1,6 @@
 var socket
 var cnv;
+var cnv1;
 socket = io();
 function set(file){
 	var sketch = function(p){
@@ -29,6 +30,12 @@ function set(file){
 			window.cnv = p.createCanvas(img.width, img.height);
 			p.centerCanvas();
 			p.background(img);
+			socket.on('main_point',(data)=>{
+				var i;
+				for(i=0;i<data.length;i++){
+					p.newdrawing(data[i]);
+				}
+			});
 		}
 		p.windowResized = function(){
 			p.centerCanvas();
@@ -46,6 +53,12 @@ function set(file){
 				window.socket.emit('mouse',data);
 				console.log('sending: ',p.mouseX+',',p.mouseY+','+',',p.pmouseX+',',p.pmouseY);
 				p.line(p.mouseX,p.mouseY,p.pmouseX,p.pmouseY);
+			}
+		}
+		p.keyTyped = function(){
+			console.log("Key pressed");
+			if(p.key==='a'){
+				p.clear();
 			}
 		}
 		p.newdrawing = function(data){
@@ -88,6 +101,7 @@ window.onload = function(){
 				} 
 				set(data.file_sub);
 			});
+
 			socket.on('revamp',()=>{
 				var load_ = document.getElementById("page-wrapper");
 				load_.style.display="block";
