@@ -36,6 +36,7 @@ function set(file){
 					p.newdrawing(data[i]);
 				}
 			});
+			socket.emit("load_done1");
 		}
 		p.windowResized = function(){
 			p.centerCanvas();

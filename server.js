@@ -13,7 +13,6 @@ console.log("Socket server is running on localhost:" + host)
 
 let socket = require('socket.io')
 let io = socket(server);
-
 io.sockets.on('connection', newConnection)
 
 function newConnection(socket){
@@ -26,6 +25,8 @@ function newConnection(socket){
 			
 			console.log("sent");
 		}
+	});
+	socket.on('load_done1',()=>{
 		if(point_cache.length>0){
 			console.log("sending points");
 			socket.emit('main_point',point_cache);
