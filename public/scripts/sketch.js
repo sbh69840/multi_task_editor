@@ -1,6 +1,4 @@
 var socket
-var cnv;
-var cnv1;
 socket = io();
 function set(file){
 	var sketch = function(p){
@@ -13,7 +11,8 @@ function set(file){
 		p.centerCanvas = function(){
 			var x = (p.windowWidth - p.width) / 2;
 			var y = (p.windowHeight - p.height) / 2;
-			window.cnv.position(Math.max(x,0), Math.max(y,0));
+			cnv.position(Math.max(x,0), Math.max(y,0));
+			graph.position(Math.max(x,0), Math.max(y,0));
 		}
 		p.myinput = function(){
 			console.log("Entering: ",this.value());
@@ -27,9 +26,10 @@ function set(file){
 		}
 		p.setup = function(){
 			window.socket.on('mouse',p.newdrawing);
-			window.cnv = p.createCanvas(img.width, img.height);
-			p.centerCanvas();
-			p.background(img);
+			cnv = p.createCanvas(img.width, img.height);
+			p.pixelDensity(1);
+			graph = p.createGraphics(img.width,img.height);
+			p.centerCanvas();			
 			socket.on('main_point',(data)=>{
 				var i;
 				for(i=0;i<data.length;i++){
@@ -42,8 +42,9 @@ function set(file){
 			p.centerCanvas();
 		}
 		p.draw = function(){
-			p.stroke(0);
-			p.strokeWeight(3);
+			p.background(img);
+			graph.stroke(0);
+			graph.strokeWeight(3);
 			if(p.mouseIsPressed==true){
 				let data = {
 					x:p.mouseX,
@@ -53,17 +54,19 @@ function set(file){
 				}
 				window.socket.emit('mouse',data);
 				console.log('sending: ',p.mouseX+',',p.mouseY+','+',',p.pmouseX+',',p.pmouseY);
-				p.line(p.mouseX,p.mouseY,p.pmouseX,p.pmouseY);
+				graph.line(p.mouseX,p.mouseY,p.pmouseX,p.pmouseY);
+
 			}
+			p.image(graph,0,0);
 		}
 		p.keyTyped = function(){
-			console.log("Key pressed");
 			if(p.key==='a'){
-				p.clear();
+				console.log("Key pressed");
+				graph.clear();
 			}
 		}
 		p.newdrawing = function(data){
-			p.line(data.x,data.y,data.x_,data.y_);
+			graph.line(data.x,data.y,data.x_,data.y_);
 		}
 
 	}
