@@ -25,15 +25,22 @@ function set(file){
 			button.mousePressed();
 		}
 		p.setup = function(){
+			rects = [];
+			flag = false;
 			window.socket.on('mouse',p.newdrawing);
 			cnv = p.createCanvas(img.width, img.height);
-			p.pixelDensity(1);
 			graph = p.createGraphics(img.width,img.height);
 			p.centerCanvas();			
 			socket.on('main_point',(data)=>{
 				var i;
 				for(i=0;i<data.length;i++){
 					p.newdrawing(data[i]);
+				}
+			});
+			socket.on('popit',()=>{
+				if(rects.length>0){
+					rects.pop();
+					graph.clear();
 				}
 			});
 			socket.emit("load_done1");
@@ -43,30 +50,44 @@ function set(file){
 		}
 		p.draw = function(){
 			p.background(img);
-			graph.stroke(0);
 			graph.strokeWeight(3);
-			if(p.mouseIsPressed==true){
-				let data = {
-					x:p.mouseX,
-					y:p.mouseY,
-					x_:p.pmouseX,
-					y_:p.pmouseY
-				}
-				window.socket.emit('mouse',data);
-				console.log('sending: ',p.mouseX+',',p.mouseY+','+',',p.pmouseX+',',p.pmouseY);
-				graph.line(p.mouseX,p.mouseY,p.pmouseX,p.pmouseY);
-
+			graph.noFill();
+			for(var i=0;i<rects.length;i++){
+				let c = p.get(rects[i][0],rects[i][1]);
+				graph.stroke(255-c[0]);
+				graph.rect(rects[i][0],rects[i][1],rects[i][2],rects[i][3]);
 			}
 			p.image(graph,0,0);
 		}
-		p.keyTyped = function(){
-			if(p.key==='a'){
-				console.log("Key pressed");
-				graph.clear();
+		p.mousePressed = function(){
+			if(flag==false){
+				rects.push([p.mouseX,p.mouseY,0,0]);
+				flag=true;
 			}
 		}
+		p.mouseDragged = function(){
+			graph.clear();
+			var ind = rects.length-1;
+			rects[ind][2]=p.mouseX-rects[ind][0];
+			rects[ind][3]=p.mouseY-rects[ind][1];
+		}
+		p.mouseReleased = function(){
+			flag=false;
+			var ind = rects.length-1;
+			socket.emit('mouse',rects[ind]);
+		}
+		p.keyTyped = function(){
+			const k = p.keyCode;
+			if(k==26){
+				rects.pop();
+				graph.clear();
+				socket.emit('popit');
+			}
+			return false;
+		}
 		p.newdrawing = function(data){
-			graph.line(data.x,data.y,data.x_,data.y_);
+			graph.rect(data[0],data[1],data[2],data[3]);
+			rects.push(data);
 		}
 
 	}

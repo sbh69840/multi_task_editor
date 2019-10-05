@@ -8,7 +8,6 @@ const point_cache = [];
 //storing the id of the person who added the image
 var connect_id=undefined;
 app.use(express.static('public'));
-
 console.log("Socket server is running on localhost:" + host)
 
 let socket = require('socket.io')
@@ -30,6 +29,12 @@ function newConnection(socket){
 		if(point_cache.length>0){
 			console.log("sending points");
 			socket.emit('main_point',point_cache);
+		}
+	});
+	socket.on('popit',()=>{
+		if(point_cache.length>0){
+			point_cache.pop();
+			socket.broadcast.emit('popit');
 		}
 	});
 	socket.on('disconnect',()=>{
