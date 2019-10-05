@@ -112,13 +112,10 @@ window.onload = function(){
 			}
 		}
 		p.setup = function(){
-			console.log("Inside setup");
 			var fileSelect = p.createFileInput(p.gotFile);
 			fileSelect.parent("ini");
 			socket.on('main',(data)=>{
-				console.log("About to revamp your experience");
 				var load_ = document.getElementById("page-wrapper");
-				console.log("Inside load image");
 				load_.style.display="none";
 				var canva =document.getElementById("defaultCanvas0");
 				if(canva){
