@@ -1,1 +1,1 @@
-### Image Map generator with multiple editors using socket
+### Image Map collaborative editor using socket
