@@ -28,6 +28,7 @@ function set(file){
 			links = [];
 			flag = false;
 			flag1 = false;
+			changed = true;
 			window.socket.on('mouse',p.newdrawing);
 			cnv = p.createCanvas(img.width, img.height);
 			graph = p.createGraphics(img.width,img.height);
@@ -39,6 +40,7 @@ function set(file){
 				for(i=0;i<data.length;i++){
 					p.newdrawing(data[i]);
 				}
+				changed=true;
 			});
 			socket.on('main_links',(data)=>{
 				links = data;
@@ -53,6 +55,7 @@ function set(file){
 					rects.pop();
 					links.pop();
 					graph.clear();
+					changed=true;
 				}
 			});
 			socket.emit("load_done1");
@@ -61,15 +64,18 @@ function set(file){
 			p.centerCanvas();
 		}
 		p.draw = function(){
-			p.background(img);
-			graph.strokeWeight(3);
-			graph.noFill();
-			for(var i=0;i<rects.length;i++){
-				let c = p.get(rects[i][0],rects[i][1]);
-				graph.stroke(255-c[0]);
-				graph.rect(rects[i][0],rects[i][1],rects[i][2],rects[i][3]);
+			if(changed){
+				p.background(img);
+				graph.strokeWeight(3);
+				graph.noFill();
+				for(var i=0;i<rects.length;i++){
+					let c = p.get(rects[i][0],rects[i][1]);
+					graph.stroke(255-c[0]);
+					graph.rect(rects[i][0],rects[i][1],rects[i][2],rects[i][3]);
+				}
+				p.image(graph,0,0);
+				changed=false;
 			}
-			p.image(graph,0,0);
 		}
 		p.mousepres = function(){
 			if(flag==false){
@@ -83,6 +89,7 @@ function set(file){
 				var ind = rects.length-1;
 				rects[ind][2]=p.mouseX-rects[ind][0];
 				rects[ind][3]=p.mouseY-rects[ind][1];
+				changed=true;
 			}
 		}
 		p.mouseRel = function(){
@@ -105,6 +112,7 @@ function set(file){
 				socket.emit('links',valu);
 				flag1=false;
 				$("#myModal").modal("hide");
+				changed=true;
 			}
 			document.getElementById('close_modal').onclick = function(){
 				$("#myModal").modal("hide");
@@ -123,6 +131,41 @@ function set(file){
 				links.pop();
 				graph.clear();
 				socket.emit('popit');
+				changed=true;
+			}
+			if(k==32){
+				var preview = '<div id="imgdiv" style="position:absolute;">\n\t<img id="img1">\n'
+				for(var i=0;i<rects.length;i++){
+					var sub_map = '\t\t<a href="'+links[i]+'" target="_blank"><div class="maps" id="map'+i+'" style="position:absolute;left:'+rects[i][0]+'px;top:'+rects[i][1]+'px;height:'+rects[i][3]+'px;width:'+rects[i][2]+'px;"'+' id=mapdiv"'+i+'"'+'></div></a>\n';
+					preview = preview.concat(sub_map);
+				}
+				preview = preview.concat("\t</div>\n");
+				console.log(preview);
+				$('#imgdiv').remove();
+				$('#myModal1').prepend(preview);
+				$('#img1').prop('src',file.data);
+				$('#img1').prop('height',img.height);
+				$('#img1').prop('width',img.width);
+				$('.maps').hover(function(e){
+					$(this).css("border","1px solid red");
+				},function(e){
+					$(this).css("border","0px");
+				});
+				$('#myModal1').modal('show');
+				$('#close1').on('click',()=>{
+					$('#myModal1').modal('hide');
+				});
+				var x = ($(document).width() - img.width) / 2;
+				var y = ($(document).height() - img.height) / 2;
+				$('#imgdiv').css("left",Math.max(x,0)+"px");
+				$('#imgdiv').css("top",Math.max(y,0)+"px");
+				$(window).resize(function(){
+					var x = ($(document).width() - img.width) / 2;
+					var y = ($(document).height() - img.height) / 2;
+					$('#imgdiv').css("left",Math.max(x,0)+"px");
+					$('#imgdiv').css("top",Math.max(y,0)+"px");
+				});
+
 			}
 			return false;
 		}
@@ -135,6 +178,7 @@ function set(file){
 	var myp5 = new p5(sketch);
 			
 }
+
 
 window.onload = function(){
 	var sketch = function(p){

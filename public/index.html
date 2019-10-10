@@ -15,9 +15,60 @@
     border-top: 5px solid #69c773;
     box-shadow: 0 2px 10px rgba(0,0,0,0.8);
   }
-  #input_modal{
-    z-index: 2000;
+  .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: scroll; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
   }
+
+  /* Modal Content (image) */
+  .modal-content {
+    margin: auto;
+    display: block;
+  }
+  
+  /* Add Animation */
+  .modal-content, #caption {  
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+  }
+  #img1{
+    position:absolute;
+  }
+  #imgdiv{
+    left:50vh;
+    top:50vh;
+  }
+  /* The Close Button */
+  #close1 {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  #myModal1{
+    overflow-x: scroll;
+    overflow-y: scroll;
+  }
+  #close1:hover,
+  #close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
   </style>
   <script src="./p5.min.js"></script>
   <script src="./addons/p5.dom.min.js"></script>
@@ -28,7 +79,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="./scripts/sketch.js"></script>
 </head>
-
 <body>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
@@ -47,6 +97,9 @@
       
     </div>
   </div>
+  <div class="modal" id="myModal1" tabindex="-1" role="dialog">
+    <span id="close1">&times;</span>
+  </div>
   <div id="page-wrapper">
     <h1>Load an image</h1>
     <div id="ini">
@@ -55,5 +108,4 @@
   </div>
   <div id="fileDisplayArea"></div>
 </body>
-
 </html>
