@@ -99,7 +99,17 @@ function set(file){
 				p.modal();
 			}
 		}
+		p.return_code = function(){
+			var preview = '<div id="imgdiv" style="position:absolute;">\n\t<img id="img1">\n'
+			for(var i=0;i<rects.length;i++){
+				var sub_map = '\t\t<a href="'+links[i]+'" target="_blank"><div class="maps" id="map'+i+'" style="position:absolute;left:'+rects[i][0]+'px;top:'+rects[i][1]+'px;height:'+rects[i][3]+'px;width:'+rects[i][2]+'px;"'+' id=mapdiv"'+i+'"'+'></div></a>\n';
+				preview = preview.concat(sub_map);
+			}
+			preview = preview.concat("\t</div>\n");
+			return preview;
+		}
 		p.modal = function(){
+			//This function is called when you draw a rectangle on the canvas, to enter the link
 			$("#myModal").modal();
 			document.getElementById('save_modal').onclick = function(){
 				var valu = document.getElementById("input_modal").value;
@@ -116,15 +126,16 @@ function set(file){
 			}
 			document.getElementById('close_modal').onclick = function(){
 				$("#myModal").modal("hide");
+				console.log(rects);
 				rects.pop();
+				console.log(rects);
 				graph.clear();
+				changed = true;
 				flag1=false;
+				flag = false;
 			}
 		}
 		p.keyTyped = function(){
-			if(document.getElementById("myModal").style.display=="block"){
-				$('#input_modal').val($('#input_modal').val()+p.key);
-			}
 			const k = p.keyCode;
 			if(k==26){
 				rects.pop();
@@ -133,14 +144,24 @@ function set(file){
 				socket.emit('popit');
 				changed=true;
 			}
-			if(k==32){
-				var preview = '<div id="imgdiv" style="position:absolute;">\n\t<img id="img1">\n'
-				for(var i=0;i<rects.length;i++){
-					var sub_map = '\t\t<a href="'+links[i]+'" target="_blank"><div class="maps" id="map'+i+'" style="position:absolute;left:'+rects[i][0]+'px;top:'+rects[i][1]+'px;height:'+rects[i][3]+'px;width:'+rects[i][2]+'px;"'+' id=mapdiv"'+i+'"'+'></div></a>\n';
-					preview = preview.concat(sub_map);
-				}
-				preview = preview.concat("\t</div>\n");
+			if(p.key==='['){
+				var preview = p.return_code();
 				console.log(preview);
+				//Incomplete start from here
+				$("#modal2_text").text(preview);
+				$('#body2_div').css("left",Math.max(x,0)+"px");
+				$('#body2_div').css("top",Math.max(y,0)+"px");	
+				$("#myModal2").modal('show');
+				$('#close2').on('click',()=>{
+					$('#myModal2').modal('hide');
+				});
+				
+				
+			}
+			if(k==32){
+				var preview = p.return_code();
+				console.log(preview);
+				//Displaying the image preview on a modal
 				$('#imgdiv').remove();
 				$('#myModal1').prepend(preview);
 				$('#img1').prop('src',file.data);
@@ -159,6 +180,7 @@ function set(file){
 				var y = ($(document).height() - img.height) / 2;
 				$('#imgdiv').css("left",Math.max(x,0)+"px");
 				$('#imgdiv').css("top",Math.max(y,0)+"px");
+				//handling window resize while viewing the preview
 				$(window).resize(function(){
 					var x = ($(document).width() - img.width) / 2;
 					var y = ($(document).height() - img.height) / 2;
@@ -167,7 +189,7 @@ function set(file){
 				});
 
 			}
-			return false;
+			return true;
 		}
 		p.newdrawing = function(data){
 			graph.rect(data[0],data[1],data[2],data[3]);

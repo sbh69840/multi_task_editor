@@ -49,7 +49,7 @@
     top:50vh;
   }
   /* The Close Button */
-  #close1 {
+  #close1 ,#close2{
     position: absolute;
     top: 15px;
     right: 35px;
@@ -58,9 +58,12 @@
     font-weight: bold;
     transition: 0.3s;
   }
-  #myModal1{
+  #myModal1,#myModal2{
     overflow-x: scroll;
     overflow-y: scroll;
+  }
+  #modal2_text{
+    position: relative;
   }
   #close1:hover,
   #close:focus {
@@ -99,6 +102,14 @@
   </div>
   <div class="modal" id="myModal1" tabindex="-1" role="dialog">
     <span id="close1">&times;</span>
+  </div>
+  <div class="modal" id="myModal2" tabindex="-1" role="dialog">
+    <span id="close2">&times;</span>
+    <div class="modal-body">
+      <div id="body2_div">
+        <p id="modal2_text"></p>
+      </div>
+    </div>
   </div>
   <div id="page-wrapper">
     <h1>Load an image</h1>
