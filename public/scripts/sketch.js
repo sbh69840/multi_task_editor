@@ -108,6 +108,15 @@ function set(file){
 			preview = preview.concat("\t</div>\n");
 			return preview;
 		}
+		p.return_code1 = function(){
+			var preview = '<div id="imgdiv" style="position:absolute;">\n<pre><img id="img1"></pre></br>\n'
+			for(var i=0;i<rects.length;i++){
+				var sub_map = '<pre><pre><a href="'+links[i]+'" target="_blank"><div class="maps" id="map'+i+'" style="position:absolute;left:'+rects[i][0]+'px;top:'+rects[i][1]+'px;height:'+rects[i][3]+'px;width:'+rects[i][2]+'px;"'+' id=mapdiv"'+i+'"'+'></div></a></pre></pre></br>\n';
+				preview = preview.concat(sub_map);
+			}
+			preview = preview.concat("</div>\n");
+			return preview;
+		}
 		p.modal = function(){
 			//This function is called when you draw a rectangle on the canvas, to enter the link
 			$("#myModal").modal();
@@ -145,18 +154,17 @@ function set(file){
 				changed=true;
 			}
 			if(p.key==='['){
-				var preview = p.return_code();
+				var preview = p.return_code1();
 				console.log(preview);
 				//Incomplete start from here
 				$("#modal2_text").text(preview);
-				$('#body2_div').css("left",Math.max(x,0)+"px");
-				$('#body2_div').css("top",Math.max(y,0)+"px");	
+				$('#modal2_text').css("left",Math.max(x,0)+"px");
+				$('#modal2_text').css("top",Math.max(y,0)+"px");
+				$('#modal2_text').css("background-color","white");+	
 				$("#myModal2").modal('show');
 				$('#close2').on('click',()=>{
 					$('#myModal2').modal('hide');
 				});
-				
-				
 			}
 			if(k==32){
 				var preview = p.return_code();
@@ -167,11 +175,15 @@ function set(file){
 				$('#img1').prop('src',file.data);
 				$('#img1').prop('height',img.height);
 				$('#img1').prop('width',img.width);
-				$('.maps').hover(function(e){
-					$(this).css("border","1px solid red");
-				},function(e){
-					$(this).css("border","0px");
-				});
+				//Hover control function over the maps created
+				$('.maps').addClass("maps_animate");
+				// $('.maps').hover(function(e){
+				// 	$(this).addClass("Rec");
+				// 	$(this).css("border","1px solid red");
+				// },function(e){
+				// 	$(this).css("border","0px");
+				// });
+
 				$('#myModal1').modal('show');
 				$('#close1').on('click',()=>{
 					$('#myModal1').modal('hide');
