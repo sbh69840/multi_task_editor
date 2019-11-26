@@ -69,7 +69,9 @@
     cursor: pointer;
   }
   #body2_modal{
-    position:absolute;
+    position:relative;
+    overflow-y:auto;
+    
   }
   .maps_animate{
 	animation-name: pulse;
@@ -120,12 +122,23 @@
   <div class="modal" id="myModal1" tabindex="-1" role="dialog">
     <span id="close1">&times;</span>
   </div>
-  <div class="modal" id="myModal2" tabindex="-1" role="dialog">
-    
-    <div id="body2_modal">
-      <p id="modal2_text"></p>
+  <div class="modal fade" id="myModal2" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Code</h4>
+        </div>
+        <div class="modal-body" id="body2_modal">
+          <!-- <p id="modal2_text"></p> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" id="html_modal">HTML</button>
+          <button type="button" class="btn btn-default" id="css_modal">CSS</button>
+          <button type="button" class="btn btn-default" id="js_modal">JS</button>
+        </div>
+      </div>
+      
     </div>
-    <span id="close2">&times;</span>
   </div>
   <div id="page-wrapper">
     <h1>Load an image</h1>

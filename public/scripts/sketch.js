@@ -40,7 +40,7 @@ function set(file){
 				for(i=0;i<data.length;i++){
 					p.newdrawing(data[i]);
 				}
-				changed=true;
+				
 			});
 			socket.on('main_links',(data)=>{
 				links = data;
@@ -59,6 +59,19 @@ function set(file){
 				}
 			});
 			socket.emit("load_done1");
+			$('#html_modal').on('click',()=>{
+					var preview = p.return_code();
+					$('#body2_modal').text(preview);
+			});
+			$('#css_modal').on('click',()=>{
+				var preview = p.return_code1();
+				$('#body2_modal').text(preview);
+			});
+			$('#js_modal').on('click',()=>{
+				var preview = p.return_code2();
+				$('#body2_modal').text(preview);
+			});
+
 		}
 		p.windowResized = function(){
 			p.centerCanvas();
@@ -93,6 +106,7 @@ function set(file){
 			}
 		}
 		p.mouseRel = function(){
+			flag=false;
 			console.log("lengths",rects.length,links.length);
 			if(flag1==false && rects.length>links.length){
 				flag1=true;
@@ -109,12 +123,25 @@ function set(file){
 			return preview;
 		}
 		p.return_code1 = function(){
-			var preview = '<div id="imgdiv" style="position:absolute;">\n<pre><img id="img1"></pre></br>\n'
-			for(var i=0;i<rects.length;i++){
-				var sub_map = '<pre><pre><a href="'+links[i]+'" target="_blank"><div class="maps" id="map'+i+'" style="position:absolute;left:'+rects[i][0]+'px;top:'+rects[i][1]+'px;height:'+rects[i][3]+'px;width:'+rects[i][2]+'px;"'+' id=mapdiv"'+i+'"'+'></div></a></pre></pre></br>\n';
-				preview = preview.concat(sub_map);
-			}
-			preview = preview.concat("</div>\n");
+			var preview = '.maps_animate{animation-name: pulse;animation-duration: 1.2s;\
+				animation-iteration-count: infinite;\
+				animation-timing-function: linear;\
+			}\
+			@keyframes pulse{\
+				0%{\
+					box-shadow: 0px 0px 5px 0px rgb(255, 255, 255);\
+				}\
+				65%{\
+					box-shadow: 0px 0px 5px 13px rgba(139, 128, 128, 0.548);\
+				}\
+				90%{\
+					box-shadow: 0px 0px 5px 13px rgba(128, 117, 117, 0.288);\
+				}\
+			}'
+			return preview;
+		}
+		p.return_code2 = function(){
+			var preview = '$(".maps").addClass("maps_animate");'
 			return preview;
 		}
 		p.modal = function(){
@@ -154,13 +181,13 @@ function set(file){
 				changed=true;
 			}
 			if(p.key==='['){
-				var preview = p.return_code1();
+				var preview = p.return_code();
 				console.log(preview);
 				//Incomplete start from here
-				$("#modal2_text").text(preview);
-				$('#modal2_text').css("left",Math.max(x,0)+"px");
-				$('#modal2_text').css("top",Math.max(y,0)+"px");
-				$('#modal2_text').css("background-color","white");+	
+				$("#body2_modal").text(preview);
+				// $('#modal2_text').css("left",Math.max(x,0)+"px");
+				// $('#modal2_text').css("top",Math.max(y,0)+"px");
+				// $('#modal2_text').css("background-color","white");+	
 				$("#myModal2").modal('show');
 				$('#close2').on('click',()=>{
 					$('#myModal2').modal('hide');
@@ -206,6 +233,7 @@ function set(file){
 		p.newdrawing = function(data){
 			graph.rect(data[0],data[1],data[2],data[3]);
 			rects.push(data);
+			changed=true;
 		}
 
 	}
