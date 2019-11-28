@@ -17,7 +17,7 @@ io.sockets.on('connection', newConnection)
 function newConnection(socket){
 	socket.on('mouse', mouseMsg);
 	socket.on('load_done',()=>{
-		
+	
 		if(img_cache.length>0){
 			socket.emit('main',img_cache[0]);
 		}
