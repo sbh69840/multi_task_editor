@@ -71,6 +71,7 @@ function set(file){
 				var preview = p.return_code2();
 				$('#body2_modal').text(preview);
 			});
+			
 
 		}
 		p.windowResized = function(){

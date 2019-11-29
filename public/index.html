@@ -79,6 +79,56 @@
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
 }
+  .float{
+    position:absolute;
+    width:60px;
+    height:60px;
+    bottom:40px;
+    right:40px;
+    background-color:#0C9;
+    z-index: 100000;
+    color:#FFF;
+    border-radius:50px;
+    text-align:center;
+    box-shadow: 2px 2px 3px #999;
+  }
+  .label-container{
+    position:fixed;
+    bottom:48px;
+    right:105px;
+    z-index: 100000;
+    display:table;
+    visibility: hidden;
+  }
+
+  .label-text{
+    color:#FFF;
+    background:rgba(51,51,51,0.5);
+    display:table-cell;
+    vertical-align:middle;
+    padding:10px;
+    border-radius:3px;
+  }
+
+  .label-arrow{
+    display:table-cell;
+    vertical-align:middle;
+    color:#333;
+    opacity:0.5;
+  }
+  .my-float{
+    margin-top:22px;
+  }
+  a.float + div.label-container {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease;
+  }
+
+  a.float:hover + div.label-container{
+    visibility: visible;
+    opacity: 1;
+  }
 
 @keyframes pulse{
 	0%{
@@ -100,6 +150,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="./scripts/sketch.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 <body>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
@@ -147,5 +198,27 @@
     </div>
   </div>
   <div id="fileDisplayArea"></div>
+  <a href="#" class="float" id="help" data-toggle="modal" data-target="#myModal3">
+    <i class="fa fa-question my-float"></i>
+    </a>
+    <div class="label-container">
+      <div class="label-text">Help</div>
+      <i class="fa fa-play label-arrow"></i>
+      </div>
+      <div class="modal fade" id="myModal3" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Code</h4>
+            </div>
+            <div class="modal-body" id="body3_modal">
+              <p id="modal3_text">Click on <b>spcebar</b> for
+              preview <br/>Click on <b>"["</b> for code preview<br/>
+            Click on <b>"F5"</b> to load new image (if you are the master)<br/></p>
+            </div>1
+          </div>
+          
+        </div>
+      </div>
 </body>
 </html>
