@@ -47,6 +47,7 @@ function set(file){
 				console.log(links);
 			});
 			socket.on('links',(data)=>{
+				changed = true;
 				links.push(data);
 				console.log(data);
 			});
@@ -56,6 +57,8 @@ function set(file){
 					links.pop();
 					graph.clear();
 					changed=true;
+					flag1=false;
+					flag = false;
 				}
 			});
 			socket.emit("load_done1");
@@ -110,8 +113,16 @@ function set(file){
 			flag=false;
 			console.log("lengths",rects.length,links.length);
 			if(flag1==false && rects.length>links.length){
-				flag1=true;
-				p.modal();
+				if(rects[rects.length-1][2]>20&&rects[rects.length-1][3]>20){
+					flag1=true;
+					p.modal();
+				}else{
+					rects.pop();
+					graph.clear();
+					changed = true;
+					flag1=false;
+					flag = false;
+				}
 			}
 		}
 		p.return_code = function(){
@@ -147,7 +158,9 @@ function set(file){
 		}
 		p.modal = function(){
 			//This function is called when you draw a rectangle on the canvas, to enter the link
-			$("#myModal").modal();
+			$("#myModal").modal({
+				backdrop: 'static'
+			});
 			document.getElementById('save_modal').onclick = function(){
 				var valu = document.getElementById("input_modal").value;
 				flag=false;
@@ -173,15 +186,19 @@ function set(file){
 			}
 		}
 		p.keyTyped = function(){
-			const k = p.keyCode;
-			if(k==26){
-				rects.pop();
-				links.pop();
-				graph.clear();
-				socket.emit('popit');
-				changed=true;
-			}
-			if(p.key==='['){
+			console.log(p.UP_ARROW);
+			if(p.key===']'){
+				console.log("Bastard");
+				if(rects.length>0){
+					rects.pop();
+					links.pop();
+					graph.clear();
+					socket.emit('popit');
+					changed=true;
+					flag1=false;
+					flag = false;
+				}
+			}else if(p.key==='['){
 				var preview = p.return_code();
 				console.log(preview);
 				//Incomplete start from here
@@ -193,8 +210,7 @@ function set(file){
 				$('#close2').on('click',()=>{
 					$('#myModal2').modal('hide');
 				});
-			}
-			if(k==32){
+			}else if(p.keyCode===32){
 				var preview = p.return_code();
 				console.log(preview);
 				//Displaying the image preview on a modal
